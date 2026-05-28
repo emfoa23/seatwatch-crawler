@@ -74,3 +74,26 @@ GitHub PAT (cron-job.org 인증용) 은 cron-job.org 측에 등록, 본 repo 에
 ```
 
 상세 설계는 seatwatch repo plan 문서 참조.
+
+## 로컬 실행
+
+```bash
+# 가상환경 + 의존성
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+
+# CGV crawler 실행 (mock fallback — 실제 endpoint 운영 시점에 확정 후 patch)
+.venv/bin/python main.py --site cgv --targets test
+```
+
+`.env.local` 에 `DATABASE_URL`, `VALKEY_URL`, `VALKEY_KEY_PREFIX` 필요. 자세한 건 `.env.example`.
+
+## 구현 진척 (2026-05-28)
+
+- [x] 공통 인프라 (valkey_client · neon_client · diff · env)
+- [x] CGV crawler MVP (mock fallback) — Valkey snapshot 적재 + crawl_jobs · events_meta 로그
+- [ ] CGV 실제 endpoint 파싱 (운영 시점 DevTools 로 확정 후 patch)
+- [ ] 인터파크 (Playwright)
+- [ ] 캐치테이블 (공개 JSON API)
+- [ ] watch-poll workflow 실 구현
+- [ ] UA pool · backoff · proxy fallback
