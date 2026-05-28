@@ -1,0 +1,24 @@
+name: crawl-catchtable
+
+# cron-job.org → workflow_dispatch (15분 주기). 공개 JSON API.
+
+on:
+  workflow_dispatch:
+    inputs:
+      targets:
+        description: 'Comma-separated CatchTable shop IDs (empty = all active watches)'
+        required: false
+        default: ''
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Placeholder
+        run: |
+          echo "crawl-catchtable placeholder."
+          echo "구현 예정: python main.py --site catchtable --targets '${{ inputs.targets }}'"

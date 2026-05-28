@@ -1,0 +1,24 @@
+name: crawl-interpark
+
+# cron-job.org → workflow_dispatch (15분 주기). Playwright headless 사용 (SVG/Canvas 파싱).
+
+on:
+  workflow_dispatch:
+    inputs:
+      targets:
+        description: 'Comma-separated Interpark event IDs (empty = all active watches)'
+        required: false
+        default: ''
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Placeholder
+        run: |
+          echo "crawl-interpark placeholder."
+          echo "구현 예정: setup-python + playwright install + python main.py --site interpark"

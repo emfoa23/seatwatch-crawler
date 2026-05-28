@@ -1,0 +1,24 @@
+name: crawl-watch-poll
+
+# cron-job.org → workflow_dispatch (3분 주기).
+# 활성 watch 등록된 마감 자리만 빠르게 폴링 → 빈자리 발생 시 알림 큐 push.
+# 일반 snapshot 보다 자주, 대상 수가 적음.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Placeholder
+        run: |
+          echo "crawl-watch-poll placeholder."
+          echo "구현 예정:"
+          echo " - watch_targets WHERE status='active' AND seat_selector 가 'occupied' 였던 자리 추출"
+          echo " - 사이트별 그룹화 후 빠른 fetch (snapshot 갱신 + freshness 갱신)"
+          echo " - 변경 감지 → notify:queue LPUSH"

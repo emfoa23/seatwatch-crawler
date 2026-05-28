@@ -1,0 +1,18 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Skeleton check
+        run: |
+          echo "crawler CI placeholder — main.py / cgv/ / interpark/ / catchtable/ 구현 후 ruff/mypy/pytest 추가 예정"
+          ls -la
