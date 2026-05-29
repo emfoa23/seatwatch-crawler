@@ -1,4 +1,4 @@
-name: crawl-interpark
+name: crawl-megabox
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ on:
 jobs:
   crawl:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -28,4 +28,4 @@ jobs:
           VALKEY_KEY_PREFIX: ${{ secrets.VALKEY_KEY_PREFIX }}
           CRAWLER_USER_AGENT_POOL: ${{ secrets.CRAWLER_USER_AGENT_POOL }}
           GITHUB_RUN_ID: ${{ github.run_id }}
-        run: python main.py --site interpark --targets '${{ inputs.targets }}'
+        run: python main.py --site megabox --targets '${{ inputs.targets }}'

@@ -1,12 +1,10 @@
 name: crawl-cgv
 
-# cron-job.org → workflow_dispatch (15분 주기). GitHub Actions schedule 미사용.
-
 on:
   workflow_dispatch:
     inputs:
       targets:
-        description: 'Comma-separated CGV target IDs (empty = all active watches)'
+        description: 'Comma-separated externalEventId (empty = all active watches)'
         required: false
         default: ''
 
@@ -14,16 +12,20 @@ jobs:
   crawl:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-
     steps:
       - uses: actions/checkout@v4
-
-      - name: Placeholder
-        run: |
-          echo "crawl-cgv placeholder."
-          echo "구현 예정: python main.py --site cgv --targets '${{ inputs.targets }}'"
-          echo "  - watch_targets WHERE site='cgv' AND status='active' GROUP BY external_event_id"
-          echo "  - 각 target fetch (UA rotation, jitter 0.5~2.0s, 429 백오프)"
-          echo "  - Valkey snapshot:cgv:<id> + freshness:cgv:<id> set"
-          echo "  - diff vs 직전 snapshot → 빈자리 → notify:queue LPUSH"
-          echo "  - crawl_jobs insert (status, seats_fetched, error)"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: requirements.txt
+      - name: Install
+        run: pip install -r requirements.txt
+      - name: Crawl
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          VALKEY_URL: ${{ secrets.VALKEY_URL }}
+          VALKEY_KEY_PREFIX: ${{ secrets.VALKEY_KEY_PREFIX }}
+          CRAWLER_USER_AGENT_POOL: ${{ secrets.CRAWLER_USER_AGENT_POOL }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+        run: python main.py --site cgv --targets '${{ inputs.targets }}'

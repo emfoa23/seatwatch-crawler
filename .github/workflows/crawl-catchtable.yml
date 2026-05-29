@@ -1,12 +1,10 @@
 name: crawl-catchtable
 
-# cron-job.org → workflow_dispatch (15분 주기). 공개 JSON API.
-
 on:
   workflow_dispatch:
     inputs:
       targets:
-        description: 'Comma-separated CatchTable shop IDs (empty = all active watches)'
+        description: 'Comma-separated externalEventId (empty = all active watches)'
         required: false
         default: ''
 
@@ -14,11 +12,20 @@ jobs:
   crawl:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-
     steps:
       - uses: actions/checkout@v4
-
-      - name: Placeholder
-        run: |
-          echo "crawl-catchtable placeholder."
-          echo "구현 예정: python main.py --site catchtable --targets '${{ inputs.targets }}'"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: requirements.txt
+      - name: Install
+        run: pip install -r requirements.txt
+      - name: Crawl
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          VALKEY_URL: ${{ secrets.VALKEY_URL }}
+          VALKEY_KEY_PREFIX: ${{ secrets.VALKEY_KEY_PREFIX }}
+          CRAWLER_USER_AGENT_POOL: ${{ secrets.CRAWLER_USER_AGENT_POOL }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+        run: python main.py --site catchtable --targets '${{ inputs.targets }}'

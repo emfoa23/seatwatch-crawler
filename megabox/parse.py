@@ -1,4 +1,3 @@
-"""CGV 응답 → SeatSnapshot. 운영 endpoint 미확정 → mock."""
 from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any
@@ -11,8 +10,8 @@ def build_mock(target_id: str, event_datetime: str, *, source_note: str = 'mock'
         row_label = chr(ord('A') + r)
         for c in range(1, cols + 1):
             grade = 'PREMIUM' if r >= rows - 2 else 'STANDARD'
-            price = 17000 if grade == 'PREMIUM' else 14000
-            occupied = (r * cols + c) % 7 == 0 or (r * 31 + c * 13) % 11 == 0
+            price = 16000 if grade == 'PREMIUM' else 13000
+            occupied = (r * cols + c) % 7 == 0
             seats.append({
                 'id': f'{row_label}{c}',
                 'row': row_label,
@@ -22,11 +21,11 @@ def build_mock(target_id: str, event_datetime: str, *, source_note: str = 'mock'
                 'status': 'occupied' if occupied else 'available',
             })
     return {
-        'site': 'cgv',
+        'site': 'megabox',
         'externalEventId': target_id,
         'eventDatetime': event_datetime,
         'capturedAt': datetime.now(timezone.utc).isoformat(),
-        'title': f'CGV {target_id}',
-        'venue': 'CGV',
+        'title': f'메가박스 {target_id}',
+        'venue': '메가박스',
         'seats': seats,
     }
