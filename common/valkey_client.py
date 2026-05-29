@@ -43,3 +43,23 @@ def push_notification(client: redis.Redis, payload: dict[str, Any]) -> None:
 
 def set_freshness(client: redis.Redis, site: str, event_id: str, ts_iso: str) -> None:
     client.set(_k(f'freshness:{site}:{event_id}'), ts_iso)
+
+
+def index_event(client: redis.Redis, snapshot: dict[str, Any]) -> None:
+    """검색 인덱스용 events:<site> hash 에 entry 등록.
+
+    HSET events:<site> <externalEventId> JSON({site, externalEventId, eventDatetime, title, venue, region, category})
+    region / category 는 snapshot 에 없을 수 있으므로 .get() 으로 None fallback.
+    """
+    site = snapshot['site']
+    event_id = snapshot['externalEventId']
+    entry = {
+        'site': site,
+        'externalEventId': event_id,
+        'eventDatetime': snapshot['eventDatetime'],
+        'title': snapshot.get('title'),
+        'venue': snapshot.get('venue'),
+        'region': snapshot.get('region'),
+        'category': snapshot.get('category'),
+    }
+    client.hset(_k(f'events:{site}'), event_id, json.dumps(entry))

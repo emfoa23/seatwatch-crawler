@@ -25,7 +25,7 @@ seatwatch-crawler/
 ├── interpark/                  # Playwright 기반
 ├── catchtable/                 # 공개 JSON API
 ├── common/
-│   ├── valkey_client.py        # snapshot read/write (prefix seatwatch:prod:)
+│   ├── valkey_client.py        # snapshot read/write + events:<site> 인덱스 (prefix seatwatch:prod:)
 │   ├── neon_client.py          # seat_events insert · watch 매칭
 │   ├── diff.py                 # 직전 snapshot diff → 빈자리 감지 → 큐 push
 │   ├── ua_rotation.py          # UA 풀

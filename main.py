@@ -59,6 +59,7 @@ def crawl(site: str, fetcher: Callable[[str, str], dict[str, Any]], targets: lis
                     result = diff_snapshots(old, snap)
 
                     valkey_client.set_snapshot(rc, snap)
+                    valkey_client.index_event(rc, snap)
                     neon_client.upsert_event_meta(conn, snap)
                     neon_client.insert_seat_events(conn, site, ext, snap['eventDatetime'], result['changes'])
 
